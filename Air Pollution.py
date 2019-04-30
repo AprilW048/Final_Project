@@ -37,7 +37,7 @@ def generate_year_month(df, colname):
 # In[5]:
 
 
-city_attributes = read_indata('./historical-hourly-weather-data/city_attributes.csv')
+#city_attributes = read_indata('./historical-hourly-weather-data/city_attributes.csv')
 airpollution = read_indata('./pollution_us_2000_2016.csv')
 
 #extract columns that need to analyze
