@@ -72,53 +72,54 @@ def city_groupby(df, colname, city_name):
 
 # In[86]:
 
+if __name__ == '__main__':
 
-Chicago_airpollution = city_groupby(airpollution, 'City', 'Chicago')
-Chicago_airpollution.head()
-airpollution[(airpollution['City']=='Chicago')]
-#NYC_airpollution = city_groupby(airpollution, 'City', 'New York')
-#NYC_airpollution.head()
+    Chicago_airpollution = city_groupby(airpollution, 'City', 'Chicago')
+    Chicago_airpollution.head()
+    airpollution[(airpollution['City']=='Chicago')]
+    #NYC_airpollution = city_groupby(airpollution, 'City', 'New York')
+    #NYC_airpollution.head()
 
-#LA_airpollution = city_groupby(airpollution, 'City', 'Los Angeles')
-#LA_airpollution.head()
-
-
-# In[35]:
+    #LA_airpollution = city_groupby(airpollution, 'City', 'Los Angeles')
+    #LA_airpollution.head()
 
 
-chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
-chicago_crime.head()
-## count chicago crime
-#chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).size()
+    # In[35]:
 
 
-# In[36]:
+    chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
+    chicago_crime.head()
+    ## count chicago crime
+    #chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).size()
 
 
-generate_year_month(chicago_crime, 'Date').head()
+    # In[36]:
 
 
-# In[66]:
+    generate_year_month(chicago_crime, 'Date').head()
 
 
-chicago_crime = chicago_crime[(chicago_crime.year>=2012) & (chicago_crime.year<2018)]
-chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).count().rename(columns={'ID':'count'})
-chi_crime_per_month.head()
+    # In[66]:
 
 
-# In[75]:
+    chicago_crime = chicago_crime[(chicago_crime.year>=2012) & (chicago_crime.year<2018)]
+    chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).count().rename(columns={'ID':'count'})
+    chi_crime_per_month.head()
 
 
-pd.merge(Chicago_airpollution, chi_crime_per_month,on=['year','month'])
+    # In[75]:
 
 
-# In[76]:
+    pd.merge(Chicago_airpollution, chi_crime_per_month,on=['year','month'])
 
 
-Chicago_airpollution
+    # In[76]:
 
 
-# In[ ]:
+    Chicago_airpollution
+
+
+    # In[ ]:
 
 
 
