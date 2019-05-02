@@ -151,6 +151,113 @@ def vectorize_temperature(df):
     return val
 
 
+#### Solution
+
+if __name__ == "__main__":
+
+    Humiditiy = read_indata('./historical-hourly-weather-data/humidity.csv')
+    Pressure = read_indata('./historical-hourly-weather-data/pressure.csv')
+    Temperature = read_indata('./historical-hourly-weather-data/temperature.csv')
+    weather_description = read_indata('./historical-hourly-weather-data/weather_description.csv')
+    wind_direction = read_indata('./historical-hourly-weather-data/wind_direction.csv')
+    wind_speed = read_indata('./historical-hourly-weather-data/wind_speed.csv')
+    chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
+
+    ### ADD YEAR AND MONTH COLUMN TO DATA
+    df_list = [Humiditiy, Pressure, Temperature, wind_direction,wind_speed]
+    stringlist = ['Humiditiy', 'Pressure', 'Temperature', 'wind_direction', 'wind_speed']
+
+    for index in range(len(df_list)):
+        df = generate_year_month_day(df_list[index], 'datetime', stringlist[index])
+
+    ### Chicago
+    new_df_list = get_city_weather('Chicago', df_list, stringlist)
+    weather_all = mergeall_weather(new_df_list, ['year', 'month', 'day'])
+
+
+    chicago_crime['year'] = chicago_crime.Date.str[6:10]
+    chicago_crime['month'] = chicago_crime.Date.str[0:2]
+    chicago_crime['day'] = chicago_crime.Date.str[3:5]
+
+    ## count chicago crime
+
+    chi_crime_per_day = chicago_crime.groupby(['year', 'month', 'day', 'Primary Type', 'Arrest',  'Domestic']).size()
+    chi_crime_per_day= pd.DataFrame(chi_crime_per_day.reset_index())
+    chi_crime_per_day = chi_crime_per_day.rename(columns = {0:'Count'})
+    chi_crime_per_day[['year', 'month', 'day']] = chi_crime_per_day[['year', 'month', 'day']].astype(int)
+
+    crime_weather= merge_dataframe(weather_all,chi_crime_per_day,['year', 'month', 'day'])
+    crime_weather = crime_weather.dropna()
+    crime_weather['Temperature'] = crime_weather['Temperature'] - 273.15
+    crime_weather.iloc[:,4:8]
+
+    set(crime_weather['Primary Type'])
+
+    ### humidity versus crime type
+    subset = crime_weather[['year', 'month', 'day','Humiditiy', 'Count','Primary Type']].copy(deep = True)
+    subset['Reltaive Humidity'] = subset.apply(vectorize_humidity, axis = 1)
+
+    ### ignore the time, overall weather and crime
+    crime_count = pd.DataFrame(subset.groupby(['Primary Type','Reltaive Humidity']).agg({'Count':np.sum}))
+    crime_count = crime_count.reset_index()
+
+    crime_count = crime_count.loc[crime_count['Primary Type'].isin(['ASSAULT','BATTERY', 'CRIMINAL DAMAGE','HOMICIDE'])]
+    fig, ax = plt.subplots()
+    N = len(set(crime_count['Primary Type']))
+    HighCounts = tuple(crime_count.loc[crime_count['Reltaive Humidity'] == 'High', 'Count'])
+    NormalCounts = tuple(crime_count.loc[crime_count['Reltaive Humidity'] == 'Normal', 'Count'])
+    LowCounts = tuple(crime_count.loc[crime_count['Reltaive Humidity'] == 'Low', 'Count'])
+    ind = np.arange(N)
+    width = 0.35
+
+    p1 = ax.bar(ind, LowCounts, witdth,color='Yellow')
+    p2 = ax.bar(ind, NormalCounts, witdth, color='Orange', bottom = LowCounts)
+    p3 = ax.bar(ind, HighCounts, witdth, color = 'Red', bottom = NormalCounts)
+    ax.set_ylabel('Count')
+    ax.set_xlabel('Relative Humidity')
+    ax.set_title('Count by Relative Humidity')
+    ax.set_xticks(ind + width / 2.)
+    #ax.set_yticks(np.arange(0, 81, 10))
+    ax.set_xticklabels(('ASSAULT','BATTERY', 'CRIMINAL DAMAGE','HOMICIDE'))
+    plt.show()
+
+
+
+
+    #### Temperature Versus Crime
+
+    Temp_sub = crime_weather[['year', 'month', 'day', 'Temperature', 'Count', 'Primary Type']].copy(deep=True)
+
+    Temp_sub1 = pd.DataFrame(Temp_sub.groupby(['year','month','day']).agg({'Count': np.sum, 'Temperature': np.mean}))
+    Temp_sub1 = Temp_sub1.reset_index()
+
+    ax1 = Temp_sub1.plot.scatter(x='Temperature',y = 'Count',c = 'DarkBlue')
+    plt.show()
+
+
+    Temp_sub2 = pd.DataFrame(Temp_sub.groupby(['year','month','day', 'Primary Type']).agg({'Count': np.sum, 'Temperature': np.mean}))
+
+    Temp_sub2 = Temp_sub2.reset_index()
+    Temp_sexual = Temp_sub2.loc[Temp_sub2['Primary Type'].isin(['CRIM SEXUAL ASSAULT','OBSCENITY', 'SEX OFFENSE','STALKING'])]
+    Temp_sexual = Temp_sexual[['Primary Type','Temperature','Count']]
+
+
+
+    Temp_sub['Temperature range'] = Temp_sub.apply(vectorize_temperature, axis=1)
+
+    fig, ax = plt.subplots()
+
+    for name in ['CRIM SEXUAL ASSAULT','OBSCENITY', 'SEX OFFENSE','STALKING']:
+        ax.plot(Temp_sub[Temp_sub['Primary Type'] == name].Temperature, Temp_sub[Temp_sub['Primary Type'] == name].Count, label=name)
+
+    ax.set_xlabel("Temperature")
+    ax.set_ylabel("Count")
+    ax.legend(loc='best')
+    plt.show()
+
+    ### ignore the time, overall weather and crime
+    Temp_crime_count = pd.DataFrame(Temp_sub.groupby(['year', 'month','Primary Type', 'Temperature range']).agg({'Count': np.sum}))
+    Temp_crime_count = Temp_crime_count.reset_index()
 
 
 
