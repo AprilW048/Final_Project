@@ -37,23 +37,6 @@ def generate_year_month(df, colname):
 # In[5]:
 
 
-#city_attributes = read_indata('./historical-hourly-weather-data/city_attributes.csv')
-airpollution = read_indata('./pollution_us_2000_2016.csv')
-
-#extract columns that need to analyze
-airpollution = airpollution[['City', 'Date Local', 'NO2 Mean','NO2 AQI', 'O3 Mean','O3 AQI','SO2 Mean','SO2 AQI','CO Mean','CO AQI']]
-
-airpollution.head()
-
-
-# In[7]:
-
-
-#generate year and month
-airpollution = generate_year_month(airpollution, 'Date Local')
-airpollution.head()
-
-
 # In[39]:
 
 
@@ -71,56 +54,3 @@ def city_groupby(df, colname, city_name):
 
 
 # In[86]:
-
-if __name__ == '__main__':
-
-    Chicago_airpollution = city_groupby(airpollution, 'City', 'Chicago')
-    Chicago_airpollution.head()
-    airpollution[(airpollution['City']=='Chicago')]
-    #NYC_airpollution = city_groupby(airpollution, 'City', 'New York')
-    #NYC_airpollution.head()
-
-    #LA_airpollution = city_groupby(airpollution, 'City', 'Los Angeles')
-    #LA_airpollution.head()
-
-
-    # In[35]:
-
-
-    chicago_crime = read_indata('./Chicago_crime_2012-2017.csv')
-    chicago_crime.head()
-    ## count chicago crime
-    #chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).size()
-
-
-    # In[36]:
-
-
-    generate_year_month(chicago_crime, 'Date').head()
-
-
-    # In[66]:
-
-
-    chicago_crime = chicago_crime[(chicago_crime.year>=2012) & (chicago_crime.year<2018)]
-    chi_crime_per_month = chicago_crime[['ID', 'year', 'month']].groupby(['year', 'month']).count().rename(columns={'ID':'count'})
-    chi_crime_per_month.head()
-
-
-    # In[75]:
-
-
-    pd.merge(Chicago_airpollution, chi_crime_per_month,on=['year','month'])
-
-
-    # In[76]:
-
-
-    Chicago_airpollution
-
-
-    # In[ ]:
-
-
-
-
