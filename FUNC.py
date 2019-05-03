@@ -38,7 +38,7 @@ def generate_year_month_day(df, colname):
 def get_city_weather(cityname, df_list, stringlist):
     """
     Extract the specific city's weather, including temperature, humidity, wind speed, from the
-    weather dataset
+    weather dataset, specify the corresponding dataset in df_list
 
     :param cityname: a string of cityname, like "Chicago"
     :param df_list: a list of dataframe
@@ -114,10 +114,21 @@ def get_city(cityname, citycrime, weather_all):
 
     crime_weather = crime_weather[(crime_weather.year >= 2012) & (crime_weather.year < 2018)]
     crime_weather = crime_weather.rename(columns={cityname: 'indexvalue'})
-
     return crime_weather
 
-#### Humidity comfortable range from 30-60
+def convert_to_Celsius(df,col):
+    """
+
+    :param df: the dataframe that need to do the conversion
+    :param col: the colunm that need to do the conversion
+    :return: the dataframe after the conversion
+    """
+    df[col]=df[col]-273.5
+    return df
+
+
+
+#Humidity comfortable range from 30-60
 def vectorize_humidity(df):
     """
     To vectorize the humidity
@@ -175,7 +186,8 @@ def normalize_humidity(df, colname):
 
 #for air pollution part
 def city_groupby(df, colname, city_name):
-    '''This function mainly is used to process the AQI data.
+    '''
+    This function mainly is used to process the AQI data.
     :param df: dataframe we want to divide base on city name
     :param colname: the column name in the dataframe saved the city name
     :param city_name: the specific city name
