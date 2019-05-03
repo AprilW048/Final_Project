@@ -124,8 +124,8 @@ def city_temp_Celsius(df,col):
     :return: the dataframe after the conversion
     """
     city_temp = df[[col, 'year', 'month', 'day']]
-    df[col]=df[col]-273.5
-    return df
+    city_temp[col]=city_temp[col]-273.5
+    return city_temp
 
 
 
