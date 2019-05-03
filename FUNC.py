@@ -173,6 +173,37 @@ def normalize_humidity(df, colname):
     return df
 
 
+#for air pollution part
+def city_groupby(df, colname, city_name):
+    '''This function mainly is used to process the AQI data.
+    :param df: dataframe we want to divide base on city name
+    :param colname: the column name in the dataframe saved the city name
+    :param city_name: the specific city name
+    :return: dataframe after filter city and year from 2012 to 2018, group by year and month
+    '''
+    df = df[(df[colname].str.contains(city_name)) & (df.year>=2012) & (df.year<2018)]
+    df = df.groupby(['year','month']).agg({'mean'})
+
+    return df
+
+def crime_count(df, date_colname,per):
+    '''
+    :param df: dataframe we want to count the number of crime
+    :param colname: a string column name in the dataframe saved the date
+    :return: dataframe after adding the column
+    '''
+    df['year'] = df[date_colname].str[6:10].astype(int)
+    df['month'] = df[date_colname].str[0:2].astype(int)
+    df['day'] =  df[date_colname].str[3:5].astype(int)
+    df = df[(df.year>=2012) & (df.year<2018)]
+    if per == 'month':
+        df_per = df[[date_colname,'year', 'month']].groupby(['year', 'month']).count().rename(columns={date_colname:'count'})
+    elif per == 'day':
+        df_per = df[[date_colname,'year', 'month','day']].groupby(['year', 'month','day']).count().rename(columns={date_colname:'count'})
+    #df['indextype'] = str(string)
+    return df_per
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod(verbose=True)
