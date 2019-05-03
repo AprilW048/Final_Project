@@ -185,7 +185,7 @@ def city_temp_Celsius(df,city):
     >>> temp_date['month'] = pd.DatetimeIndex(temp_date['datetime']).month
     >>> temp_date['day'] = pd.DatetimeIndex(temp_date['datetime']).day
     >>> results=city_temp_Celsius(temp_date,'Los Angeles')
-    >>> results['Los Angeles'][1]<250
+    >>> results['Los Angeles'][1]<273.5
     True
     """
     city_temp = df[[city, 'year', 'month', 'day']]
@@ -195,11 +195,18 @@ def city_temp_Celsius(df,city):
 def average_temp(df,city, per):
     """
     This function is mainly useful in calculating the daily and monthly
-    average temperature of different cities
+    average temperature of the specifying cities
 
-    :param df:
-    :param per:
-    :return:
+    :param df: dataframe that contain a city's temperature data
+    :param per: specify whether want to calculate the daily average temperature or monthly average temperature
+    :return: a dataframe that contains the results after calculation
+    >>> temp_date = pd.read_csv('./sample_data/temp_sample.csv')
+    >>> temp_date['year'] = pd.DatetimeIndex(temp_date['datetime']).year
+    >>> temp_date['month'] = pd.DatetimeIndex(temp_date['datetime']).month
+    >>> temp_date['day'] = pd.DatetimeIndex(temp_date['datetime']).day
+    >>> results=average_temp(temp_date,'Chicago','day')
+    >>> len(results['mean_temp'])
+    2
     """
     if per=='day':
         df_after=df[[city,'year','month','day']].\
