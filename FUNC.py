@@ -18,7 +18,7 @@ def read_indata(path):
     return data
 
 #generate new column year for every data
-def generate_year_month_day(df, colname):
+def generate_year_month_day(df, colname,per):
     '''
     This function generate three new columns, which are year, month and day based on the variable
     datetime
@@ -27,13 +27,20 @@ def generate_year_month_day(df, colname):
     :param colname: a stirng column name in the dataframe saved the dateandtime
     :return: dataframe after adding the column
     >>> air_data=pd.read_csv('./sample_data/pollution_sample.csv')
-    >>> results=generate_year_month_day(air_data,'Date')
+    >>> results=generate_year_month_day(air_data,'Date','day')
     >>> results['day'][0]
     24
+    >>> results2=generate_year_month_day(air_data,'Date','month')
+    >>> results2['month'][0]
+    12
     '''
-    df['year'] = pd.DatetimeIndex(df[colname]).year
-    df['month'] = pd.DatetimeIndex(df[colname]).month
-    df['day'] = pd.DatetimeIndex(df[colname]).day
+    if per =='day':
+        df['year'] = pd.DatetimeIndex(df[colname]).year
+        df['month'] = pd.DatetimeIndex(df[colname]).month
+        df['day'] = pd.DatetimeIndex(df[colname]).day
+    elif per=='month':
+        df['year'] = pd.DatetimeIndex(df[colname]).year
+        df['month'] = pd.DatetimeIndex(df[colname]).month
     return df
 
 
