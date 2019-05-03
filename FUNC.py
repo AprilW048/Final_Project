@@ -180,7 +180,6 @@ def city_temp_Celsius(df,city):
     :param df: the original Temperature data
     :param col: the colunm that need to do the conversion
     :return: the dataframe after the conversion
-
     >>> tem_date = pd.read_csv(./sample_data/temp_sample.csv)
     >>> results=city_temp_Celsius(temp_date,'Los Angeles')
     >>> results['Los Angeles'][1]
