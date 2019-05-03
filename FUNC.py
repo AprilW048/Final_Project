@@ -180,9 +180,12 @@ def city_temp_Celsius(df,city):
     :param df: the original Temperature data
     :param col: the colunm that need to do the conversion
     :return: the dataframe after the conversion
-    >>> tem_date = pd.read_csv(./sample_data/temp_sample.csv)
+    >>> temp_date = pd.read_csv('./sample_data/temp_sample.csv')
+    >>> temp_date['year'] = pd.DatetimeIndex(temp_date['datetime']).year
+    >>> temp_date['month'] = pd.DatetimeIndex(temp_date['datetime']).month
+    >>> temp_date['day'] = pd.DatetimeIndex(temp_date['datetime']).day
     >>> results=city_temp_Celsius(temp_date,'Los Angeles')
-    >>> results['Los Angeles'][1]
+    >>> round(results['Los Angeles'][1],2)
     18.37
     """
     city_temp = df[[city, 'year', 'month', 'day']]
