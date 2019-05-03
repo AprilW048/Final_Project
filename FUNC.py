@@ -185,8 +185,8 @@ def city_temp_Celsius(df,city):
     >>> temp_date['month'] = pd.DatetimeIndex(temp_date['datetime']).month
     >>> temp_date['day'] = pd.DatetimeIndex(temp_date['datetime']).day
     >>> results=city_temp_Celsius(temp_date,'Los Angeles')
-    >>> round(results['Los Angeles'][1],2)
-    18.37
+    >>> results['Los Angeles'][1]<250
+    True
     """
     city_temp = df[[city, 'year', 'month', 'day']]
     city_temp[city]=city_temp[city]-273.5
