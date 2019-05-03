@@ -54,7 +54,6 @@ def get_city_weather(cityname, df_list, stringlist):
         citydf = pd.DataFrame(citydf.groupby(['year', 'month', 'day']).mean())
         citydf = citydf.reset_index()
         citydf = citydf.rename(columns={cityname: stringlist[i]})
-
         new_df_list.append(citydf)
     return new_df_list
 
@@ -70,9 +69,7 @@ def merge_dataframe(df1, df2, mergeby):
     :param mergeby: column names referred to merge om
     :return: merged data
     """
-
     merged_data = pd.merge(df1, df2, on=mergeby, how='left')
-
     return merged_data
 
 
@@ -84,7 +81,6 @@ def mergeall_weather(new_df_list, mergeby):
     :param mergeby: column named referred to merge om
     :return: new dataframe merged all weather
     """
-
     weather_all = new_df_list[0]
     for i in range(len(new_df_list) - 1):
         weather_all = merge_dataframe(weather_all, new_df_list[i + 1], mergeby)
@@ -141,7 +137,6 @@ def vectorize_temperature(df):
     :param df: dataframe containing temperature
     :return: a value after vectorize
     """
-
     if df['Temperature'] <= 5:
         val = '0-5'
     elif df['Temperature'] <= 10:
@@ -169,7 +164,6 @@ def normalize_humidity(df, colname):
     """
     minmaxnorm = (df[colname] - df[colname].min()) / (df[colname].max() - df[colname].min())
     df[colname] = minmaxnorm
-
     return df
 
 
@@ -205,8 +199,11 @@ def average_temp(df,city, per):
     >>> temp_date['month'] = pd.DatetimeIndex(temp_date['datetime']).month
     >>> temp_date['day'] = pd.DatetimeIndex(temp_date['datetime']).day
     >>> results=average_temp(temp_date,'Chicago','day')
+    >>> results2=average_temp(temp_date,'Chicago','month')
     >>> len(results['mean_temp'])
     2
+    >>> len(results2['mean_temp'])
+    1
     """
     if per=='day':
         df_after=df[[city,'year','month','day']].\
@@ -228,6 +225,14 @@ def city_groupby(df, colname, city_name):
     :param colname: the column name in the dataframe saved the city name
     :param city_name: the specific city name
     :return: dataframe after filter city and year from 2012 to 2018, group by year and month
+    >>> air_data=pd.read_csv('./sample_data/pollution_sample.csv')
+    >>> air_data=air_data[['CBSA', 'Date', 'AQI']]
+    >>> air_data['year'] = pd.DatetimeIndex(air_data['Date']).year
+    >>> air_data['month'] = pd.DatetimeIndex(air_data['Date']).month
+    >>> air_data['day'] = pd.DatetimeIndex(air_data['Date']).day
+    >>> results=city_groupby(air_data,'CBSA','Chicago')
+    >>> results['AQI']['mean'][0]
+    57.125
     '''
     df = df[(df[colname].str.contains(city_name)) & (df.year>=2012) & (df.year<2018)]
     df = df.groupby(['year','month']).agg({'mean'})
@@ -239,6 +244,15 @@ def crime_count(df, date_colname,per):
     :param df: dataframe we want to count the number of crime
     :param colname: a string column name in the dataframe saved the date
     :return: dataframe after adding the column
+    >>> crime_date = pd.read_csv('./sample_data/LA_crime_sample.csv')
+    >>> daily_crime=crime_count(crime_date,'Date Occurred','day')
+    >>> daily_crime['count'][1]
+    1
+
+    >>> monthly_crime=crime_count(crime_date,'Date Occurred','month')
+    >>> monthly_crime['count'][0]
+    10
+
     '''
     df['year'] = df[date_colname].str[6:10].astype(int)
     df['month'] = df[date_colname].str[0:2].astype(int)
