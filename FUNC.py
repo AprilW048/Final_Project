@@ -140,7 +140,7 @@ def average_temp(df,city, per):
             groupby(['year','month','day'], as_index=False ).agg({'mean'}).\
             reset_index().rename(columns={city:'mean_temp'})
     elif per=='month':
-        df_after = df[[city, 'year', 'month', 'day']]. \
+        df_after = df[[city, 'year', 'month']]. \
             groupby(['year', 'month'], as_index=False).agg({'mean'}). \
             reset_index().rename(columns={city: 'mean_temp'})
     df_after.columns=df_after.columns.droplevel(1)
