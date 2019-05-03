@@ -116,13 +116,14 @@ def get_city(cityname, citycrime, weather_all):
     crime_weather = crime_weather.rename(columns={cityname: 'indexvalue'})
     return crime_weather
 
-def convert_to_Celsius(df,col):
+def city_temp_Celsius(df,col):
     """
 
     :param df: the dataframe that need to do the conversion
     :param col: the colunm that need to do the conversion
     :return: the dataframe after the conversion
     """
+    city_temp = df[[col, 'year', 'month', 'day']]
     df[col]=df[col]-273.5
     return df
 
