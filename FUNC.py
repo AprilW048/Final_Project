@@ -10,6 +10,9 @@ def read_indata(path):
 
     :param path: a string of path saved the dataset
     :return: pandas datarame
+    >>> pd=read_indata('./sample_data/pollution_sample.csv')
+    >>> pd['AQI'][0]
+    53
     '''
     data = pd.read_csv(path)
     return data
@@ -23,40 +26,15 @@ def generate_year_month_day(df, colname):
     :param df: dataframe we want to add column year and month
     :param colname: a stirng column name in the dataframe saved the dateandtime
     :return: dataframe after adding the column
-    >>> raw_data = {'name': ['Willard Morris', 'Al Jennings', 'Omar Mullins', 'Spencer McDaniel'],'birth_date': ['01-02-1996', '08-05-1997', '04-28-1996', '12-16-1995']}
-    >>> df = pd.DataFrame(raw_data, index = ['Willard Morris', 'Al Jennings', 'Omar Mullins', 'Spencer McDaniel'])
-    >>> df_after=generate_year_month_day(df,'birth_date')
-    >>> df['day'].sum()
-    51
+    >>> air_data=pd.read_csv('./sample_data/pollution_sample.csv')
+    >>> results=generate_year_month_day(air_data,'Date')
+    >>> results['day'][0]
+    24
     '''
     df['year'] = pd.DatetimeIndex(df[colname]).year
     df['month'] = pd.DatetimeIndex(df[colname]).month
     df['day'] = pd.DatetimeIndex(df[colname]).day
     return df
-
-
-def get_city_weather(cityname, df_list, stringlist):
-    """
-    Extract the specific city's weather, including temperature, humidity, wind speed, from the
-    weather dataset, specify the corresponding dataset in df_list
-
-    :param cityname: a string of cityname, like "Chicago"
-    :param df_list: a list of dataframe
-    :param stringlist: a list of the name of these dataframe
-    :return: a new list of dataframe, with some information updated
-
-    """
-    new_df_list = []
-    for i in range(len(stringlist)):
-        citydf = df_list[i][(df_list[i].year >= 2012) & (df_list[i].year < 2018)].copy(deep=True)
-        citydf = citydf[['year', 'month', 'day', cityname]]
-        citydf[['year', 'month', 'day']] = citydf[['year', 'month', 'day']].astype(int)
-        citydf = pd.DataFrame(citydf.groupby(['year', 'month', 'day']).mean())
-        citydf = citydf.reset_index()
-        citydf = citydf.rename(columns={cityname: stringlist[i]})
-        new_df_list.append(citydf)
-    return new_df_list
-
 
 
 def merge_dataframe(df1, df2, mergeby):
@@ -68,49 +46,10 @@ def merge_dataframe(df1, df2, mergeby):
     :param df2: a dataframe
     :param mergeby: column names referred to merge om
     :return: merged data
+
     """
     merged_data = pd.merge(df1, df2, on=mergeby, how='left')
     return merged_data
-
-
-def mergeall_weather(new_df_list, mergeby):
-    """
-    This function is used to merge all the updated weather dataframe
-
-    :param new_df_list: updated list of weather dataframe from former step
-    :param mergeby: column named referred to merge om
-    :return: new dataframe merged all weather
-    """
-    weather_all = new_df_list[0]
-    for i in range(len(new_df_list) - 1):
-        weather_all = merge_dataframe(weather_all, new_df_list[i + 1], mergeby)
-    return weather_all
-
-
-def get_city(cityname, citycrime, weather_all):
-    '''
-    This function is used to get the merged crime data and weather data of the pointed city
-
-    :param cityname: a string of the name of the city
-    :param citycrime: the crime data of this city
-    :param weather_all: new dataframe merged all weather
-    :return: new dataframe
-    '''
-
-    city_weather = weather_all[['year', 'month', 'day', cityname, 'indextype']].copy(deep=True)
-    citycrime_per_month = citycrime.groupby(['year', 'month', 'day']).size()
-    citycrime_per_month = pd.DataFrame(citycrime_per_month.reset_index())
-    citycrime_per_month = citycrime_per_month.rename(columns={0: 'Count'})
-    citycrime_per_month[['year', 'month', 'day']] = citycrime_per_month[['year', 'month', 'day']].astype(int)
-
-    city_weather[['year', 'month', 'day']] = city_weather[['year', 'month', 'day']].astype(int)
-
-    crime_weather = pd.merge(city_weather[['year', 'month', 'day', cityname, 'indextype']], citycrime_per_month,
-                             on=['year', 'month'], how='left')
-
-    crime_weather = crime_weather[(crime_weather.year >= 2012) & (crime_weather.year < 2018)]
-    crime_weather = crime_weather.rename(columns={cityname: 'indexvalue'})
-    return crime_weather
 
 
 #Humidity comfortable range from 30-60
@@ -120,6 +59,15 @@ def vectorize_humidity(df):
 
     :param df: dataframe containing Humidity
     :return: a value after vectorize the humidity
+    >>> raw_data = {'Humiditiy': [0.4,0.6,0.7]}
+    >>> df = pd.DataFrame(raw_data)
+    >>> df['Humidity'] = df.apply(vectorize_humidity, axis=1)
+    >>> df['Humidity'][0]
+    'Low'
+    >>> df['Humidity'][1]
+    'Normal'
+    >>> df['Humidity'][2]
+    'High'
     """
     if df['Humiditiy'] <= 0.45:
         val = 'Low'
@@ -136,6 +84,24 @@ def vectorize_temperature(df):
 
     :param df: dataframe containing temperature
     :return: a value after vectorize
+    >>> raw_data = {'Temperature': [4, 8, 11,16,22,27,31]}
+    >>> df = pd.DataFrame(raw_data)
+    >>> df['Temperature'] = df.apply(vectorize_temperature, axis=1)
+    >>> df['Temperature'][0]
+    '0-5'
+    >>> df['Temperature'][1]
+    '5-10'
+    >>> df['Temperature'][2]
+    '10-15'
+    >>> df['Temperature'][3]
+    '15-20'
+    >>> df['Temperature'][4]
+    '20-25'
+    >>> df['Temperature'][5]
+    '25-30'
+    >>> df['Temperature'][6]
+    '>30'
+
     """
     if df['Temperature'] <= 5:
         val = '0-5'
