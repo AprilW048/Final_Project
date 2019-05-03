@@ -1,0 +1,12 @@
+﻿CBSA,CBSA Code,Date,AQI,Category,Defining Parameter,Defining Site,Number of Sites Reporting
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/24/12,53,Moderate,PM2.5,17-031-0022,29
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/25/12,35,Good,Ozone,17-031-4201,29
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/26/12,52,Moderate,PM2.5,18-089-0031,33
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/27/12,61,Moderate,PM2.5,17-031-0057,29
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/28/12,64,Moderate,PM2.5,17-031-0022,27
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/29/12,75,Moderate,PM2.5,18-089-0022,32
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/30/12,63,Moderate,PM2.5,17-031-0022,27
+"Chicago-Naperville-Elgin, IL-IN-WI",16980,12/31/12,54,Moderate,PM2.5,55-059-0019,27
+"Ocala, FL",36100,01/01/12,58,Moderate,PM2.5,12-083-0003,2
+"Ocala, FL",36100,01/02/12,31,Good,Ozone,12-083-0003,2
+"Ocala, FL",36100,01/03/12,31,Good,Ozone,12-083-0004,2
