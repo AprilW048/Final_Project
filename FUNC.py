@@ -116,36 +116,6 @@ def get_city(cityname, citycrime, weather_all):
     crime_weather = crime_weather.rename(columns={cityname: 'indexvalue'})
     return crime_weather
 
-def city_temp_Celsius(df,city):
-    """
-    Extract the corresponding city's temperature and convert it to Celsius degree from the
-    original Temperature data.
-    :param df: the original Temperature data
-    :param col: the colunm that need to do the conversion
-    :return: the dataframe after the conversion
-    """
-    city_temp = df[[city, 'year', 'month', 'day']]
-    city_temp[city]=city_temp[city]-273.5
-    return city_temp
-
-def average_temp(df,city, per):
-    """
-
-    :param df:
-    :param per:
-    :return:
-    """
-    if per=='day':
-        df_after=df[[city,'year','month','day']].\
-            groupby(['year','month','day'], as_index=False ).agg({'mean'}).\
-            reset_index().rename(columns={city:'mean_temp'})
-    elif per=='month':
-        df_after = df[[city, 'year', 'month']]. \
-            groupby(['year', 'month'], as_index=False).agg({'mean'}). \
-            reset_index().rename(columns={city: 'mean_temp'})
-    df_after.columns=df_after.columns.droplevel(1)
-    return df_after
-
 
 #Humidity comfortable range from 30-60
 def vectorize_humidity(df):
@@ -201,6 +171,39 @@ def normalize_humidity(df, colname):
     df[colname] = minmaxnorm
 
     return df
+
+
+def city_temp_Celsius(df,city):
+    """
+    Extract the corresponding city's temperature and convert it to Celsius degree from the
+    original Temperature data.
+    :param df: the original Temperature data
+    :param col: the colunm that need to do the conversion
+    :return: the dataframe after the conversion
+    """
+    city_temp = df[[city, 'year', 'month', 'day']]
+    city_temp[city]=city_temp[city]-273.5
+    return city_temp
+
+def average_temp(df,city, per):
+    """
+    This function is mainly useful in calculating the daily and monthly
+    average temperature of different cities
+
+    :param df:
+    :param per:
+    :return:
+    """
+    if per=='day':
+        df_after=df[[city,'year','month','day']].\
+            groupby(['year','month','day'], as_index=False ).agg({'mean'}).\
+            reset_index().rename(columns={city:'mean_temp'})
+    elif per=='month':
+        df_after = df[[city, 'year', 'month']]. \
+            groupby(['year', 'month'], as_index=False).agg({'mean'}). \
+            reset_index().rename(columns={city: 'mean_temp'})
+    df_after.columns=df_after.columns.droplevel(1)
+    return df_after
 
 
 #for air pollution part
