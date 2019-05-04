@@ -14,20 +14,24 @@ Additional to Chicago, we would also analyze other major cities such as Los Ange
 Hypothesis:
 1. Temperature could be one of the factors that affect crimes in major cities. The frequency of crime is relatively high in warm seasons and low in cold seasons.
 2. Air pollution could be one of the factors that affect crime rate. Server air pollution can trigger physical discomfort which could lead to antisocial behavior and induce aggression, thus increasing the crime rate.
-3. The temperature and air pollution might have different effects on crimes, it might have greater effect on outdoor crimes and have less impact on indoor crimes.
+3. The temperature and air pollution might have different effects on different type of crimes, it might have greater effect on personal crimes like assault and have less impact on property crime like theft.
 
 
-Data source:
-crime data: from Chicago police department,Open Data Portal and NYPD
+Data source: <br>
+crime data: <br>
+Chicago: https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present-Dashboard/5cd6-ry5g  <br>
+Los Angeles: https://data.lacity.org/A-Safe-City/Crime-Data-from-2010-to-Present/y8tr-7khq    <br>
+New York City: https://catalog.data.gov/dataset/nypd-complaint-data-historic
 
-Weather data: from kaggle
+Weather data: https://www.kaggle.com/selfishgene/historical-hourly-weather-data
 
-Pollution data: from EPA
+Air Pollution data: https://aqs.epa.gov/aqsweb/airdata/download_files.html#AQI
 
 
 Results:
 
 1. The frequency of crime in Chicago has some connection with temperature, the scartter plot and the regression results all indicate that the crime count is relatively high in warm seasons and low in cold seasons. We applied the same analysis on Los Angeles and New York, and got the similar results.
-2. 
-3.
+2. The frequency of crime in Chicago has shows some positive correlation with air pollution. The scartter plot and the regression results all indicate that the crime count is relatively high in higer AQI and low in lower AQI. The correlation is weak but positive. We applied the same analysis on Los Angeles and New York, both show less correlation between air pollution and crime.
+3. Based on our analysis, air pollution do not have different effects on different type of crimes. 
+ <br> <br>
 Details shown in the jupyter notebook.
