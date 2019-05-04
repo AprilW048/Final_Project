@@ -213,18 +213,22 @@ def city_groupby(df, colname, city_name):
     return df
 
 def crime_count(df, date_colname,per):
-    '''
+    ''' This funtion is used to count the number of crime based on month or day
     :param df: dataframe we want to count the number of crime
     :param colname: a string column name in the dataframe saved the date
     :return: dataframe after adding the column
-    >>> crime_date = pd.read_csv('./sample_data/LA_crime_sample.csv')
-    >>> daily_crime=crime_count(crime_date,'Date Occurred','day')
+    >>> crime_data = pd.read_csv('./sample_data/LA_crime_sample.csv')
+    >>> daily_crime=crime_count(crime_data,'Date Occurred','day')
     >>> daily_crime['count'][1]
     1
 
-    >>> monthly_crime=crime_count(crime_date,'Date Occurred','month')
+    >>> monthly_crime=crime_count(crime_data,'Date Occurred','month')
     >>> monthly_crime['count'][0]
     10
+    >>> new_crime=normalize_crime_type(crime_data,'Crime Code Description')
+    >>> type_crime=crime_count(new_crime,'Date Occurred','type')
+    >>> type_crime['count'][0]
+    3
 
     '''
     df['year'] = df[date_colname].str[6:10].astype(int)
@@ -235,8 +239,84 @@ def crime_count(df, date_colname,per):
         df_per = df[[date_colname,'year', 'month']].groupby(['year', 'month']).count().rename(columns={date_colname:'count'})
     elif per == 'day':
         df_per = df[[date_colname,'year', 'month','day']].groupby(['year', 'month','day']).count().rename(columns={date_colname:'count'})
-    #df['indextype'] = str(string)
+    elif per == 'type':
+        df_per = df[[date_colname, 'year', 'month', 'type']].groupby(['year', 'month', 'type']).count().rename(columns={date_colname: 'count'})
     return df_per
+
+def crime_type_word_count(crime_df, type_colname):
+    """This function is used to count the frequency of word in the type column.
+    It could help classify the current crime type into a more general category
+
+    :param crime_df:  dataframe we want to count the number of words crime type
+    :param type_colname: a string column name in the dataframe saved the crime type
+    :return: return the frequency of each word
+    >>> crime_data = pd.read_csv('./sample_data/LA_crime_sample.csv')
+    >>> word_frequency=crime_type_word_count(crime_data,'Crime Code Description')
+    >>> word_frequency[word_frequency.index=='ROBBERY'][0]
+    2
+
+    """
+    crime_word = crime_df[type_colname].str.split('\s|,', expand=True)
+    word_count = crime_word.stack().value_counts()
+    return word_count
+
+def normalize_crime_type(crime_df, type_colname):
+    """This function is used to normailize the crime type in different city.
+
+    :param crime_df: data frame that contain crime data
+    :param type_colname: the name the column that indicate crime type
+    :return: return the crime data frame with a new column 'type'
+    >>> crime_data = pd.read_csv('./sample_data/LA_crime_sample.csv')
+    >>> crime_data['Crime Code Description'][3]
+    'BATTERY - SIMPLE ASSAULT'
+    >>> new_crime=normalize_crime_type(crime_data,'Crime Code Description')
+    >>> new_crime['type'][3]
+    'ASSAULT'
+
+    """
+    crime_type = crime_df[[type_colname]].replace(
+        regex=[r'^.*ASSAULT.*$', r'^.*BATTERY.*$', r'^.*INTIMATE.*$', r'^.*RAPE.*$', r'^.*KIDNAPPING.*$',
+               r'^.*ASSLT.*$', ], value='ASSAULT')
+    crime_type = crime_type[[type_colname]].replace(
+        regex=[r'^.*OFF.*$', r'^.*MISCHIEF.*$', r'^.*HARRASSMENT.*$', r'^.*EXTORTION.*$',
+               r'^.*JOSTLING.*$', r'^.*OBSCENITY.*$', r'^.*STALK.*$', r'^.*INDECENT.*$', r'^.*PEEP.*$',
+               r'^.*INTIMIDATION.*$', r'^.*THREAT.*$'], value='OFFENSES')
+    crime_type = crime_type[[type_colname]].replace(
+        regex=[r'^.*DAMAGE.*$', r'^.*VANDALISM.*$', r'^.*IMPAIRED.*$', r'^.*ARSON.*$', r'^.*WRECK.*$'],
+        value='VANDALISM')
+
+    crime_type = crime_type[[type_colname]].replace(regex=[r'^.*BURGLAR.*$'], value='BURGLARY')
+    crime_type = crime_type[[type_colname]].replace(regex=[r'^.*ROBBERY.*$'], value='ROBBERY')
+    crime_type = crime_type[[type_colname]].replace(
+        regex=[r'^.*THEFT.*$', r'^.*LARCENY.*$', r'^.*STOLEN.*$', r'^.*SNATCHING.*$', r'^.*PROWLER.*$',
+               r'^.*PICKPOCKET.*$', ], value='THEFT')
+    crime_type = crime_type[[type_colname]].replace(regex=[r'^.*DRUG.*$', r'^.*NARCOTIC.*$'], value='DRUG')
+    crime_type = crime_type[[type_colname]].replace(
+        regex=[r'^.*VIOLATION.*$', r'^.*GAMBL.*$', r'^.*LEWD.*$', r'^.*ALCOHOL.*$',
+               r'^.*ESCAPE.*$', r'^.*RESIST.*$', r'^.*CONTEMPT.*$', r'^.*YIELD.*$',
+               r'^.*DISTURB.*$', r'^.*DISRUPT.*$', r'^.*PUB.*$', r'^.*DISORDER.*$', r'^.*SCARE.*$',
+               r'^.*WEAPON.*$', r'^.*SHOT.*$', r'^.*FIREARM.*$',
+               r'^.*LOITERING.*$', r'^.*UNAUTHORIZED.*$', r'^.*THROW.*$', r'^.*DUMP.*$',
+               r'^.*TRESPASS.*$', r'^.*DRIVING.*$', r'^.*TRAFFIC.*$'], value='VIOLATION')
+    crime_type = crime_type[[type_colname]].replace(
+        regex=[r'^.*DECEPTIVE.*$', r'^.*FRAUD.*$', r'^.*FORGERY.*$', r'^.*CONCEALED.*$', r'^.*COUNTERFEIT.*$'],
+        value='DECEPTIVE')
+
+    crime_type = crime_type[[type_colname]].replace(regex=[r'^.*HOMICIDE.*$', r'^.*MURDER.*$', r'^.*MANSLAUGHTER.*$'],
+                                                    value='HOMICIDE')
+
+    crime_type = crime_type[[type_colname]].replace(
+        regex=[r'^.*OTHER.*$', r'^.*ATTEMPT.*$', r'^.*NON.*$', r'^.*FALSE.*$',
+               r'^.*CHILD.*$', r'^.*CHL.*$', r'^.*ANIMAL.*$', r'^.*DOCUMENT.*$',
+               r'^.*SEX.*$', r'^.*PIMP.*$', r'^.*PROSTITUTION.*$', r'^.*PANDER.*$', r'^.*COPULATION.*$',
+               r'^.*CODE.*$', r'^.*LAW.*$', r'^.*MISCELLANEOUS.*$'], value='OTHERS')
+
+    crime_df['type'] = crime_type
+    return crime_df
+
+
+
+
 
 
 if __name__ == "__main__":
