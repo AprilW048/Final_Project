@@ -17,10 +17,10 @@ Hypothesis:
 3. The temperature and air pollution might have different effects on different type of crimes, it might have greater effect on personal crimes like assault and have less impact on property crime like theft.
 
 
-Data source:
-crime data: 
-Chicago: https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present-Dashboard/5cd6-ry5g 
-Los Angeles: https://data.lacity.org/A-Safe-City/Crime-Data-from-2010-to-Present/y8tr-7khq   
+Data source: <br>
+crime data: <br>
+Chicago: https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present-Dashboard/5cd6-ry5g  <br>
+Los Angeles: https://data.lacity.org/A-Safe-City/Crime-Data-from-2010-to-Present/y8tr-7khq    <br>
 New York City: https://catalog.data.gov/dataset/nypd-complaint-data-historic
 
 Weather data: https://www.kaggle.com/selfishgene/historical-hourly-weather-data
