@@ -15,9 +15,7 @@ Hypothesis:
 
 Data source:
 crime data: from Chicago police department,Open Data Portal and NYPD
-
 Weather data: from kaggle
-
 Pollution data: from EPA
 
 Results:
