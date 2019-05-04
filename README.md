@@ -32,7 +32,7 @@ Results:
 
 1. The frequency of crime in Chicago shows positive relation with temperature, the scartter plot and the regression results all indicate that the crime count is relatively high in warm seasons and low in cold seasons. We applied the same analysis on Los Angeles and New York, and got the similar results in New York, while in Los Angeles, weather's affect on crime is not that significant.
 2. The frequency of crime in Chicago has shows some positive correlation with air pollution. The scartter plot and the regression results all indicate that the crime count is relatively high in higer AQI and low in lower AQI. The correlation is weak but positive. We applied the same analysis on Los Angeles and New York, both show less correlation between air pollution and crime.
-3. Based on our analysis, air pollution do not have different effects on different type of crimes. 
+3. Although air pollution does not have much correlation with crime rate especially in Los Angeles, the correlation table does show that correlation between ASSAULT and AQI higer than THEFT in all of these three cities.
 4. Temperature's effect on different type of crimes are similar, most of crimes have positive relation with temperature, few has negative relation with temperature. 
  <br> <br>
 Details shown in the jupyter notebook.
